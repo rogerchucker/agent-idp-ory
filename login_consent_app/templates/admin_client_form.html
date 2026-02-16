@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ 'Edit' if is_edit else 'Create' }} Hydra Client</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 2rem; max-width: 860px; }
+      .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+      .card { border: 1px solid #d0d7de; border-radius: 8px; padding: 1rem; }
+      .error { color: #b42318; margin-bottom: 0.8rem; }
+      label { display: block; margin-top: 0.8rem; }
+      input, textarea, select { width: 100%; padding: 0.5rem; box-sizing: border-box; font-family: inherit; }
+      textarea { min-height: 90px; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+      .actions { margin-top: 1rem; display: flex; gap: 0.6rem; }
+      a.button, button { display: inline-block; padding: 0.5rem 0.8rem; border: 1px solid #d0d7de; border-radius: 6px; background: #fff; text-decoration: none; color: #111827; cursor: pointer; }
+      button.primary { background: #111827; color: #fff; border-color: #111827; }
+      .hint { color: #57606a; font-size: 0.9rem; margin-top: 0.25rem; }
+      .checkline { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.8rem; }
+      .checkline input { width: auto; }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <h1>{{ 'Edit' if is_edit else 'Create' }} Client</h1>
+      <a class="button" href="/admin/clients">Back to clients</a>
+    </div>
+
+    <div class="card">
+      {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+      <form method="post" action="{{ '/admin/clients/' + (client.client_id or '')|urlencode + '/edit' if is_edit else '/admin/clients/new' }}">
+        <label>Client ID</label>
+        <input type="text" name="client_id" value="{{ client.client_id or '' }}" {{ 'readonly' if is_edit else '' }} required />
+
+        <label>Client Name</label>
+        <input type="text" name="client_name" value="{{ client.client_name or '' }}" />
+
+        <label>Client Secret {{ '(optional for update)' if is_edit else '(optional, Hydra auto-generates if empty)' }}</label>
+        <input type="text" name="client_secret" value="" />
+
+        <div class="row">
+          <div>
+            <label>Token Endpoint Auth Method</label>
+            <select name="token_endpoint_auth_method">
+              {% set method = client.token_endpoint_auth_method or 'client_secret_post' %}
+              <option value="client_secret_post" {{ 'selected' if method == 'client_secret_post' else '' }}>client_secret_post</option>
+              <option value="client_secret_basic" {{ 'selected' if method == 'client_secret_basic' else '' }}>client_secret_basic</option>
+              <option value="none" {{ 'selected' if method == 'none' else '' }}>none</option>
+            </select>
+          </div>
+          <div>
+            <label>Scope (space-separated)</label>
+            <input type="text" name="scope" value="{{ client.scope or '' }}" />
+          </div>
+        </div>
+
+        <label>Redirect URIs (one per line)</label>
+        <textarea name="redirect_uris">{{ (client.redirect_uris or []) | join('\n') }}</textarea>
+
+        <label>Grant Types (one per line)</label>
+        <textarea name="grant_types">{{ (client.grant_types or []) | join('\n') }}</textarea>
+
+        <label>Response Types (one per line)</label>
+        <textarea name="response_types">{{ (client.response_types or []) | join('\n') }}</textarea>
+
+        <label>Audience (one per line)</label>
+        <textarea name="audience">{{ (client.audience or []) | join('\n') }}</textarea>
+
+        <div class="checkline">
+          <input id="skip_consent" type="checkbox" name="skip_consent" {{ 'checked' if client.skip_consent else '' }} />
+          <label for="skip_consent" style="margin:0;">Skip consent screen for this client</label>
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="submit">{{ 'Update' if is_edit else 'Create' }} Client</button>
+          <a class="button" href="/admin/clients">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hydra Admin Clients</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 2rem; max-width: 1040px; }
+      .top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+      .pill { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.85rem; }
+      .up { background: #dcfce7; color: #166534; }
+      .down { background: #fee2e2; color: #991b1b; }
+      table { width: 100%; border-collapse: collapse; margin-top: 0.8rem; }
+      th, td { border: 1px solid #d0d7de; padding: 0.6rem; text-align: left; vertical-align: top; }
+      th { background: #f6f8fa; }
+      .actions { white-space: nowrap; }
+      a.button, button { display: inline-block; padding: 0.45rem 0.7rem; border: 1px solid #d0d7de; border-radius: 6px; background: #fff; color: #111827; text-decoration: none; cursor: pointer; }
+      a.primary { background: #111827; color: #fff; border-color: #111827; }
+      .error { color: #b42318; margin: 0.75rem 0; }
+      form.inline { display: inline; }
+      .meta { color: #57606a; font-size: 0.95rem; }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <h1>Hydra Clients</h1>
+      <div>
+        <span class="meta">Signed in as {{ admin_user }}</span>
+        <a class="button" href="/admin/logout">Logout</a>
+      </div>
+    </div>
+
+    <p>
+      Hydra status:
+      <span class="pill {{ 'up' if health == 'up' else 'down' }}">{{ health }}</span>
+    </p>
+
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+    <div>
+      <a class="button primary" href="/admin/clients/new">Create Client</a>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Client ID</th>
+          <th>Name</th>
+          <th>Scopes</th>
+          <th>Redirect URIs</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in clients %}
+          <tr>
+            <td><code>{{ c.client_id }}</code></td>
+            <td>{{ c.client_name or '-' }}</td>
+            <td>{{ c.scope or '-' }}</td>
+            <td>
+              {% for uri in c.redirect_uris or [] %}
+                <div><code>{{ uri }}</code></div>
+              {% endfor %}
+            </td>
+            <td class="actions">
+              <a class="button" href="/admin/clients/{{ c.client_id | urlencode }}/edit">Edit</a>
+              <form class="inline" method="post" action="/admin/clients/{{ c.client_id | urlencode }}/delete" onsubmit="return confirm('Delete client {{ c.client_id }}?');">
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

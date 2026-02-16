@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hydra Login</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 2rem; max-width: 720px; }
+      .card { border: 1px solid #d0d7de; border-radius: 8px; padding: 1rem; }
+      .error { color: #b42318; }
+      label { display: block; margin-top: 0.75rem; }
+      input { width: 100%; padding: 0.5rem; box-sizing: border-box; }
+      button { margin-top: 1rem; padding: 0.6rem 1rem; }
+      .hint { color: #57606a; font-size: 0.95rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Login</h1>
+    <p class="hint">Sign in with a local mock user to continue OAuth flow.</p>
+    <div class="card">
+      {% if error %}<p class="error">{{ error }}</p>{% endif %}
+      <form method="post" action="/login?login_challenge={{ login_challenge | urlencode }}">
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ email or '' }}" required />
+
+        <label>Password</label>
+        <input type="password" name="password" required />
+
+        <label>
+          <input type="checkbox" name="remember" value="true" />
+          Remember this login
+        </label>
+
+        <button type="submit">Continue</button>
+      </form>
+      <p class="hint">Default user: raj@example.com / devpass123</p>
+    </div>
+  </body>
+</html>

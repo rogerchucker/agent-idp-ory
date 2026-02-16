@@ -1,0 +1,25 @@
+services:
+  hydra-migrate:
+    image: oryd/hydra:v2.2.0
+    env_file:
+      - .env.hydra
+    command:
+      - migrate
+      - sql
+      - --yes
+      - -e
+
+  hydra:
+    image: oryd/hydra:v2.2.0
+    depends_on:
+      hydra-migrate:
+        condition: service_completed_successfully
+    env_file:
+      - .env.hydra
+    command:
+      - serve
+      - all
+      - --dev
+    ports:
+      - "4444:4444"
+      - "4445:4445"

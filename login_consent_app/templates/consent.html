@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hydra Consent</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 2rem; max-width: 720px; }
+      .card { border: 1px solid #d0d7de; border-radius: 8px; padding: 1rem; }
+      ul { margin-top: 0.3rem; }
+      button { margin-top: 1rem; margin-right: 0.6rem; padding: 0.6rem 1rem; }
+      .meta { color: #57606a; }
+    </style>
+  </head>
+  <body>
+    <h1>Consent</h1>
+    <p class="meta">Client: <strong>{{ client_name }}</strong> ({{ client_id }})</p>
+    <div class="card">
+      <p>Requested scopes:</p>
+      <ul>
+        {% for scope in requested_scopes %}
+          <li>{{ scope }}</li>
+        {% endfor %}
+      </ul>
+
+      <form method="post" action="/consent?consent_challenge={{ consent_challenge | urlencode }}">
+        <input type="hidden" name="decision" value="allow" />
+        <label>
+          <input type="checkbox" name="remember" value="true" checked />
+          Remember consent
+        </label>
+        <br />
+        <button type="submit">Allow</button>
+      </form>
+
+      <form method="post" action="/consent?consent_challenge={{ consent_challenge | urlencode }}">
+        <input type="hidden" name="decision" value="deny" />
+        <button type="submit">Deny</button>
+      </form>
+    </div>
+  </body>
+</html>
