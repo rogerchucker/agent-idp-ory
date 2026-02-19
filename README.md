@@ -70,3 +70,10 @@ docker compose -f docker-compose.prod.yml --env-file .env.production up -d --bui
 ## License
 
 This project is licensed under the GNU Affero General Public License v3.0. See `LICENSE`.
+
+## Incident Manager Demo
+
+A framework-comparison registration demo is included at:
+`/Users/raj/ai/agents/agent-idp/examples/incident_manager_demo`
+
+It registers three unique RCA agents (OpenAI Agents SDK, LangGraph, Claude Agent SDK) into the IdP using `POST /agents`.
