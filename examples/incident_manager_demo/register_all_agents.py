@@ -1,32 +1,46 @@
 from __future__ import annotations
 
-from idp_client import IdpConfig, register_agent
-
-import claude_rca_agent
-import langgraph_rca_agent
-import openai_rca_agent
+from agent_idp_sdk import IdpClient, IdpConfig
+from agent_idp_sdk.adapters import (
+    build_agent,
+    build_claude_options,
+    build_crewai_agent_spec,
+    build_google_adk_agent_spec,
+    build_graph,
+    claude_registration,
+    crewai_registration,
+    google_adk_registration,
+    langgraph_registration,
+    openai_registration,
+)
 
 
 def main() -> None:
-    config = IdpConfig()
+    client = IdpClient(IdpConfig())
 
-    # Instantiate each framework-specific agent definition once.
-    openai_agent = openai_rca_agent.build_agent()
-    langgraph_graph = langgraph_rca_agent.build_graph()
-    claude_options = claude_rca_agent.build_agent_options()
+    # Instantiate each framework-specific definition once.
+    openai_agent = build_agent()
+    langgraph_graph = build_graph()
+    claude_options = build_claude_options()
+    google_adk_spec = build_google_adk_agent_spec()
+    crewai_spec = build_crewai_agent_spec()
 
     print(f"Prepared OpenAI agent: {openai_agent.name}")
     print(f"Prepared LangGraph graph object: {type(langgraph_graph).__name__}")
     print(f"Prepared Claude options max_turns: {claude_options.max_turns}")
+    print(f"Prepared Google ADK spec: {google_adk_spec.name}")
+    print(f"Prepared CrewAI spec role: {crewai_spec.role}")
 
     payloads = [
-        openai_rca_agent.registration_payload(),
-        langgraph_rca_agent.registration_payload(),
-        claude_rca_agent.registration_payload(),
+        openai_registration(),
+        langgraph_registration(),
+        claude_registration(),
+        google_adk_registration(),
+        crewai_registration(),
     ]
 
     for payload in payloads:
-        result = register_agent(config, payload)
+        result = client.register_agent(payload)
         print(f"Registered {result['agent_id']} (owner={result['owner_principal']})")
 
 

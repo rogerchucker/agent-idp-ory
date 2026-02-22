@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Incident Manager + Agent IdP registration demo for OpenAI Agents, LangGraph, and Claude Agent SDK"
 requires-python = ">=3.11"
 dependencies = [
-  "httpx>=0.28.0",
+  "agent-idp-sdk",
   "anyio>=4.0.0",
   "openai-agents>=0.2.9",
   "langgraph>=0.6.0",
@@ -13,3 +13,6 @@ dependencies = [
 
 [tool.uv]
 package = false
+
+[tool.uv.sources]
+agent-idp-sdk = { path = "../../sdk/python/agent-idp-sdk", editable = true }

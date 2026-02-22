@@ -76,4 +76,11 @@ This project is licensed under the GNU Affero General Public License v3.0. See `
 A framework-comparison registration demo is included at:
 `/Users/raj/ai/agents/agent-idp/examples/incident_manager_demo`
 
-It registers three unique RCA agents (OpenAI Agents SDK, LangGraph, Claude Agent SDK) into the IdP using `POST /agents`.
+It registers framework-specific RCA agent identities into the IdP using `POST /agents` (OpenAI Agents SDK, LangGraph, Claude Agent SDK, plus Google ADK and CrewAI adapter shapes).
+
+## Agent IdP SDK (Python)
+
+A standalone framework-agnostic SDK package is included at:
+`/Users/raj/ai/agents/agent-idp/sdk/python/agent-idp-sdk`
+
+It provides a shared IdP client and framework adapters so agents built on different SDKs can use the same Agent IdP integration path.
