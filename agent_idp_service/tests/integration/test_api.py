@@ -48,6 +48,43 @@ def test_agent_readback(client, seeded_agent):
     assert resp.json()["owner_principal"] == "user:raj@example.com"
 
 
+def test_agent_readback_with_optional_identity_metadata(client):
+    create = client.post(
+        "/agents",
+        json={
+            "agent_id": "operator-metadata",
+            "tenant": "org:democorp",
+            "owner_principal": "user:raj@example.com",
+            "self_identified_owner": "team:sre-platform",
+            "framework": "openai-agents",
+            "target_application": "incident-manager",
+            "trust_level": "high",
+            "allowed_envs": ["prod"],
+            "runtime_bindings": [
+                {
+                    "kind": "k8s",
+                    "cluster": "cluster-1",
+                    "namespace": "sre",
+                    "service_account": "operator",
+                }
+            ],
+            "status": "active",
+        },
+    )
+    assert create.status_code == 200
+    created = create.json()
+    assert created["framework"] == "openai-agents"
+    assert created["self_identified_owner"] == "team:sre-platform"
+    assert created["target_application"] == "incident-manager"
+
+    read = client.get("/agents/operator-metadata")
+    assert read.status_code == 200
+    read_back = read.json()
+    assert read_back["framework"] == "openai-agents"
+    assert read_back["self_identified_owner"] == "team:sre-platform"
+    assert read_back["target_application"] == "incident-manager"
+
+
 def test_attestation_invalid_binding_denied(client, seeded_agent):
     resp = client.post(
         "/attest/exchange",

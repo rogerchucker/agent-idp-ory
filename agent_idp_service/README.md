@@ -32,6 +32,14 @@ Production-ready baseline implementation of the Agent IdP design from `/Users/ra
 - `POST /gateway/execute` (internal key)
 - `GET /audit/events` (admin key)
 
+### Agent registration metadata
+
+`POST /agents` supports optional self-identifying metadata and will return it on both create and read:
+
+- `self_identified_owner`
+- `framework`
+- `target_application`
+
 ## Local Dev Run
 
 ```bash

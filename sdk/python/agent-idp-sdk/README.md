@@ -32,6 +32,16 @@ from agent_idp_sdk import IdpClient, IdpConfig
 from agent_idp_sdk.adapters import openai_registration
 
 client = IdpClient(IdpConfig(base_url="https://idp.example.com", admin_api_key="..."))
-result = client.register_agent(openai_registration())
+payload = openai_registration(
+    self_identified_owner="team:sre-platform",
+    target_application="incident-manager",
+)
+result = client.register_agent(payload)
 print(result["agent_id"])
 ```
+
+`registration()` for each adapter also accepts:
+
+- `owner_principal` (override canonical owner principal)
+- `framework` (override adapter default framework string)
+- `prompt_for_identity=True` (interactive prompt for missing self-identifying metadata when stdin is a TTY)

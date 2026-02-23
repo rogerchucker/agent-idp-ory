@@ -23,8 +23,11 @@ class AgentRegistration:
     trust_level: TrustLevel
     allowed_envs: list[str]
     runtime_bindings: list[RuntimeBinding]
+    self_identified_owner: str | None = None
+    framework: str | None = None
+    target_application: str | None = None
     status: AgentStatus = "active"
 
     def to_payload(self) -> dict:
         data = asdict(self)
-        return data
+        return {key: value for key, value in data.items() if value is not None}

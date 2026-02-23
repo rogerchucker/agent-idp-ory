@@ -7,8 +7,17 @@ def test_sql_store_roundtrip(tmp_path):
     db_url = f"sqlite+pysqlite:///{tmp_path / 'idp.db'}"
     store = SqlStore(db_url)
 
-    store.upsert_agent({"agent_id": "a1", "allowed_envs": ["prod"]})
+    store.upsert_agent(
+        {
+            "agent_id": "a1",
+            "allowed_envs": ["prod"],
+            "framework": "langgraph",
+            "self_identified_owner": "team:incident-response",
+            "target_application": "incident-manager",
+        }
+    )
     assert store.get_agent("a1")["allowed_envs"] == ["prod"]
+    assert store.get_agent("a1")["target_application"] == "incident-manager"
 
     store.create_grant({"grant_id": "g1", "status": "approved", "expires_at": 100})
     assert store.get_grant("g1")["status"] == "approved"

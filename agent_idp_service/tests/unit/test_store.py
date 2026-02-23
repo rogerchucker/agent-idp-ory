@@ -6,8 +6,17 @@ from app.store import JsonStore
 def test_store_roundtrip_and_cleanup(tmp_path):
     store = JsonStore(state_file=tmp_path / "state.json", audit_file=tmp_path / "audit.log")
 
-    store.upsert_agent({"agent_id": "a1", "allowed_envs": ["prod"]})
+    store.upsert_agent(
+        {
+            "agent_id": "a1",
+            "allowed_envs": ["prod"],
+            "framework": "openai-agents",
+            "self_identified_owner": "team:sre",
+            "target_application": "incident-manager",
+        }
+    )
     assert store.get_agent("a1")["allowed_envs"] == ["prod"]
+    assert store.get_agent("a1")["framework"] == "openai-agents"
 
     store.create_grant({"grant_id": "g1", "status": "approved", "expires_at": 1})
     store.update_grant("g1", {"status": "revoked"})

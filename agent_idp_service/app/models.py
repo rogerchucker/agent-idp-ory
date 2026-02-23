@@ -17,6 +17,9 @@ class Agent(BaseModel):
     agent_id: str
     tenant: str = "org:democorp"
     owner_principal: str
+    self_identified_owner: str | None = None
+    framework: str | None = None
+    target_application: str | None = None
     trust_level: Literal["low", "medium", "high"] = "medium"
     allowed_envs: list[str] = Field(default_factory=lambda: ["stage"])
     runtime_bindings: list[RuntimeBinding] = Field(default_factory=list)

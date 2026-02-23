@@ -27,6 +27,12 @@ Backward compatibility is preserved:
 4. IdP persists and returns canonical agent record.
 5. Later at runtime, each agent signs in via attestation (`/attest/exchange`) and mints capabilities.
 
+The SDK now supports optional self-identifying metadata in registration payloads:
+
+- `self_identified_owner`
+- `framework`
+- `target_application`
+
 ## Prerequisites
 
 1. Agent IdP running on `http://localhost:7001`
@@ -41,6 +47,25 @@ IDP_BASE_URL=http://localhost:7001 \
 IDP_ADMIN_API_KEY=<your-admin-key-if-required> \
 uv run python register_all_agents.py
 ```
+
+## Run the Demo UI
+
+This UI visualizes registration, authN, authZ, execution, and three expected failures:
+
+1. agent not registered
+2. failed authentication (attestation mismatch)
+3. failed authorization (policy denial)
+
+```bash
+cd /Users/raj/ai/agents/agent-idp/examples/incident_manager_demo
+uv sync
+IDP_BASE_URL=http://localhost:7001 \
+IDP_ADMIN_API_KEY=<your-admin-key-if-required> \
+IDP_INTERNAL_API_KEY=<your-internal-key-if-required> \
+uv run uvicorn web_ui.app:app --host 127.0.0.1 --port 7102 --reload
+```
+
+Open `http://127.0.0.1:7102` and run scenarios from the page.
 
 ## Expected output
 

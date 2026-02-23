@@ -18,9 +18,20 @@ def build_agent_spec() -> GoogleAdkAgentSpec:
     )
 
 
-def registration() -> dict:
+def registration(
+    *,
+    owner_principal: str | None = None,
+    self_identified_owner: str | None = None,
+    framework: str | None = None,
+    target_application: str | None = None,
+    prompt_for_identity: bool = False,
+) -> dict:
     return build_registration(
         agent_id="sre-rca-google-adk",
-        framework="google-adk",
+        framework=framework or "google-adk",
+        owner_principal=owner_principal,
+        self_identified_owner=self_identified_owner,
+        target_application=target_application,
+        prompt_for_identity=prompt_for_identity,
         service_account="rca-google-adk-sa",
     ).to_payload()
